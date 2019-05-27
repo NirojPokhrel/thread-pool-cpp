@@ -1,4 +1,3 @@
-
 set (GTEST_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/googletest)
 set (GTEST_STATIC_LIBRARIES
       ${GTEST_SOURCE_DIR}/googlemock/libgmock_main.a
