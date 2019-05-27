@@ -3,8 +3,8 @@ set (GTEST_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/googletest)
 set (GTEST_STATIC_LIBRARIES
       ${GTEST_SOURCE_DIR}/googlemock/libgmock_main.a
       ${GTEST_SOURCE_DIR}/googlemock/libgmock.a
-      ${GTEST_SOURCE_DIR}/googletest/libgtest_main.a
-      ${GTEST_SOURCE_DIR}/googletest/libgtest.a)
+      ${GTEST_SOURCE_DIR}/googlemock/gtest/libgtest_main.a
+      ${GTEST_SOURCE_DIR}/googlemock/gtest/libgtest.a)
 
 find_library (GTEST_LIBRARY
   NAMES   libgmock.a
