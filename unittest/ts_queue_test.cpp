@@ -26,7 +26,6 @@ TEST (ThreadSafeQueueTest, WaitAndPop) {
 TEST (ThreadSafeQueueTest, MutliThreadInsert) {
   thread_pool::threadsafe_queue<int> ts_queue;
   std::future<void> fut1 = std::async(std::launch::async, [&ts_queue](){
-
     for (auto i : {10, 15, 20}) {
       ts_queue.push(i);
     }
