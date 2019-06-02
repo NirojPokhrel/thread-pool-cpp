@@ -15,10 +15,10 @@ class threadsafe_queue {
     this->std_queue_ = queue.std_queue_;
   }
   threadsafe_queue& operator=(const threadsafe_queue&) = delete;    // delete the assignment operation
-  
+
   void push(T new_value) {
     std::lock_guard<std::mutex> guard(mtx_);
-    std_queue_.push(new_value);
+    std_queue_.push(std::move(new_value));
     cond_var_.notify_one();
   }
 
@@ -38,11 +38,11 @@ class threadsafe_queue {
   }
 
   bool try_pop(T& value) {
-    std::lock_guard<std::mutex> gurad(mtx_);
+    std::lock_guard<std::mutex> guard(mtx_);
     if (std_queue_.empty()) {
       return false;
     }
-    value = std_queue_.front();
+    value = std::move(std_queue_.front());
     std_queue_.pop();
     return true;
   }

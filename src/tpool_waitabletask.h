@@ -1,6 +1,7 @@
-#include SRC_TPOOL_WAITABLETASK_H_
+#ifndef SRC_TPOOL_WAITABLETASK_H_
 #define SRC_TPOOL_WAITABLETASK_H_
 #include <atomic>
+#include <future>
 #include <memory>
 #include <thread>
 #include <vector>
@@ -14,9 +15,13 @@ namespace thread_pool {
 class FunctionWrapper {
  public:
   template<typename F>
-  FunctionWrapper(F&& f) :  impl_(new ImplType<F>(std::move(f))) {}
+  FunctionWrapper(F&& f) : impl_(new ImplType<F>(std::move(f))) {}
+
+  FunctionWrapper() = default;
 
   void operator() () { impl_->Call(); }
+
+  FunctionWrapper(FunctionWrapper&& other) : impl_(std::move(other.impl_)) {}
 
   FunctionWrapper& operator=(FunctionWrapper&& other) {
     impl_ = std::move(other.impl_);
@@ -59,7 +64,7 @@ class TpoolWaitableTask {
   }
 
   template<typename FunctionType>
-  std::future<typename std::result_of<FuntionType()>::type> submit(FunctionType f) {
+  std::future<typename std::result_of<FunctionType()>::type> Submit(FunctionType f) {
     typedef typename std::result_of<FunctionType()>::type result_type;
     std::packaged_task<result_type()> task(std::move(f));
     std::future<result_type> res(task.get_future());
