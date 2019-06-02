@@ -48,5 +48,5 @@ class ThreadPool {
   std::vector<std::thread> threads_;    // store all the threads in the pool
   JoinThreads joiner_;    // clean up and join all the threads in the pool
 };
-}
+}   // namespace thread_pool
 #endif  // SRC_SIMPLE_TPOOL_H_
