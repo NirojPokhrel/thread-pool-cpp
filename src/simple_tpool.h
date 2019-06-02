@@ -14,7 +14,7 @@ class ThreadPool {
     unsigned const thread_count = std::thread::hardware_concurrency();
     try {
       for (unsigned i = 0; i < thread_count; ++i) {
-        threads_.push_back(std::thread(&thread_pool::WorkerThread, this));
+        threads_.push_back(std::thread(&ThreadPool::WorkerThread, this));
       }
     } catch (...) {
       done_ = true;

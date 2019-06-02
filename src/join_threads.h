@@ -10,7 +10,7 @@ class JoinThreads {
   ~JoinThreads() {
     for (size_t i=0; i<threads_.size(); ++i) {
       if (threads_[i].joinable()) {
-        threads_[i].join():
+        threads_[i].join();
       }
     }
   }
