@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <future>
+#include <numeric>
 #include <vector>
 #include "src/simple_tpool.h"
 
