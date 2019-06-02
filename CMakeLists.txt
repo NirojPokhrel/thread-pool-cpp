@@ -10,3 +10,21 @@ include_directories (${GTEST_INCLUDE_DIRS})
 include_directories (${GMOCK_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR})
 add_subdirectory("unittest")
+enable_testing()
+add_test(
+  NAME ts_queue
+  COMMAND ${CMAKE_BINARY_DIR}/unittest/ts_queue
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/unittest
+)
+
+add_test(
+  NAME s_tpool
+  COMMAND ${CMAKE_BINARY_DIR}/unittest/s_tpool
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/unittest
+)
+
+add_test(
+  NAME tpool_waitabletask
+  COMMAND ${CMAKE_BINARY_DIR}/unittest/tpool_waitabletask
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/unittest
+)
