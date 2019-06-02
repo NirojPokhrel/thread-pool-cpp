@@ -6,5 +6,7 @@ set (CMAKE_CXX_STANDARD 11)
 
 # set up the google test for unittest
 include (cmake/gmock_init.cmake)
+include_directories (${GTEST_INCLUDE_DIRS})
+include_directories (${GMOCK_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR})
 add_subdirectory("unittest")
