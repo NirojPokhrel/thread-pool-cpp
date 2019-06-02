@@ -4,6 +4,19 @@ project (thread_pool CXX C)
 
 set (CMAKE_CXX_STANDARD 11)
 
+list (APPEND BUILD_FLAGS  "-Wall"
+                          "-Wextra"
+                          "-Wunused"
+                          "-Wunintialized"
+                          "-Wmissing-noreturn"
+                          "-Wunreachable-code"
+                          "-Wsign-compare"
+                          "-Wstrict-null-sentinel"
+                          "-Wreturn-type"
+                          "-Wcast-qual"
+                          "-Wconversion"
+                          "-Wenum-compare"
+                          "-Wsign-conversion")
 # set up the google test for unittest
 include (cmake/gmock_init.cmake)
 include_directories (${GTEST_INCLUDE_DIRS})
