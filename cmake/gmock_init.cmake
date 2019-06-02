@@ -29,5 +29,5 @@ else ()
   gtestinit()
 endif ()
 
-set(GTEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/googletest/googletest/include)
-set(GMOCK_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/googletest/googlemock/include)
+set(GTEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/external/googletest/googletest/include)
+set(GMOCK_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/external/googletest/googlemock/include)
