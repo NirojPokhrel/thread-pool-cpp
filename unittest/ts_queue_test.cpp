@@ -46,6 +46,35 @@ TEST (ThreadSafeQueueTest, MutliThreadInsert) {
   EXPECT_TRUE(ts_queue.empty());
 }
 
+TEST (ThreadSafeQueueTest, PushPopOnEmptyQueue) {
+  thread_pool::threadsafe_queue<int> q;
+  std::promise<void> go, push_ready, pop_ready;
+  std::shared_future<void> ready(go.get_future());
+  std::future<void> push_done;
+  std::future<int> pop_done;
+  try {
+    push_done = std::async(std::launch::async, [&q, ready, &push_ready]() {
+      push_ready.set_value();
+      ready.wait();
+      q.push(42);
+    });
+    pop_done = std::async(std::launch::async, [&q, ready, &pop_ready]() {
+      pop_ready.set_value();
+      ready.wait();
+      return *q.wait_and_pop();
+    });
+  } catch (...) {
+    go.set_value();
+    throw;
+  }
+  push_ready.get_future().wait();
+  pop_ready.get_future().wait();
+  go.set_value();
+  push_done.get();
+  EXPECT_EQ (pop_done.get(), 42);
+  EXPECT_TRUE (q.empty());
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   ::testing::GTEST_FLAG(filter) = "*";

@@ -4,6 +4,8 @@ project (thread_pool CXX C)
 
 set (CMAKE_CXX_STANDARD 11)
 
+message (STATUS "Cmake system ${CMAKE_SYSTEM}")
+
 list (APPEND BUILD_FLAGS  "-Wall"
                           "-Wextra"
                           "-Wunused"
