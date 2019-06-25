@@ -107,6 +107,73 @@ TEST (ThreadSafeQueueTest, MultiThreadsPush) {
   EXPECT_TRUE (val == 21 || val == 42);
 }
 
+TEST (ThreadSafeQueueTest, MutltiThreadPopWithInsufficientData) {
+  thread_pool::threadsafe_queue<int> q;
+  q.push(20);
+  std::promise<void> go, pop_ready[2];
+  std::shared_future<void> ready(go.get_future());
+  std::future<std::shared_ptr<int>> push_done[2];
+  try {
+    for (int i=0; i<sizeof(pop_ready)/sizeof(pop_ready[0]); ++i) {
+      push_done[i] = std::async(std::launch::async, [&q, ready, &pop_ready, i] {
+        pop_ready[i].set_value();
+        ready.wait();
+        return q.try_pop();
+      });
+    }
+  } catch (...) {
+    go.set_value();
+    throw;
+  }
+  for (int i=0; i<sizeof(pop_ready)/sizeof(pop_ready[0]); ++i) {
+    pop_ready[i].get_future().wait();
+  }
+  go.set_value();
+  auto data1 = push_done[0].get();
+  auto data2 = push_done[1].get();
+  EXPECT_TRUE (data1 == nullptr || *data1 == 20);
+  EXPECT_TRUE (data2 == nullptr || *data2 == 20);
+}
+
+TEST (ThreadSafeQueueTest, MultiPushMutliPop) {
+  thread_pool::threadsafe_queue<int> q;
+  std::promise<void> go, pop_ready[2], push_ready[2];
+  std::shared_future<void> ready(go.get_future());
+  std::future<void> push_done[2];
+  std::future<std::shared_ptr<int>> pop_done[2];
+  try {
+    int value = 21;
+    for (int i=0; i<sizeof(push_ready)/sizeof(push_ready[0]); i++) {
+      push_done[i] = std::async(std::launch::async, [&q, ready, &push_ready, i]{
+        push_ready[i].set_value();
+        ready.wait();
+        q.push((i+1) * 21);
+      });
+    }
+    for (int i=0; i<sizeof(pop_ready)/sizeof(pop_ready[0]); i++) {
+      pop_done[i] = std::async(std::launch::async, [&q, ready, &pop_ready, i] {
+        pop_ready[i].set_value();
+        ready.wait();
+        return q.wait_and_pop();
+      });
+    }
+  } catch (...) {
+    go.set_value();
+    throw;
+  }
+  for (int i=0; i<sizeof(push_ready)/sizeof(push_ready[0]); i++) {
+    push_ready[i].get_future().get();
+  }
+  for (int i=0; i<sizeof(push_ready)/sizeof(push_ready[0]); i++) {
+    pop_ready[i].get_future().get();
+  }
+  go.set_value();
+  auto ptr1 = pop_done[0].get();
+  auto ptr2 = pop_done[1].get();
+  EXPECT_TRUE (*ptr1 == 21 || *ptr1 == 42);
+  EXPECT_TRUE (*ptr2 == 21 || *ptr2 == 42);
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   ::testing::GTEST_FLAG(filter) = "*";
