@@ -9,3 +9,7 @@ target_link_libraries(s_tpool ${GTEST_STATIC_LIBRARIES} -pthread)
 add_executable(tpool_waitabletask tpool_waitabletask_test.cpp)
 target_compile_options(tpool_waitabletask PUBLIC ${LOCAL_BUILD_FLAGS})
 target_link_libraries(tpool_waitabletask ${GTEST_STATIC_LIBRARIES} -pthread)
+
+add_executable(tpool_localqueue tpool_localqueue_test.cpp)
+target_compile_options(tpool_localqueue PUBLIC ${LOCAL_BUILD_FLAGS})
+target_link_libraries(tpool_localqueue ${GTEST_STATIC_LIBRARIES} -pthread)

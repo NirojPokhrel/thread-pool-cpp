@@ -43,3 +43,9 @@ add_test(
   COMMAND ${CMAKE_BINARY_DIR}/unittest/tpool_waitabletask
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/unittest
 )
+
+add_test(
+  NAME tpool_localqueue
+  COMMAND ${CMAKE_BINARY_DIR}/unittest/tpool_localqueue
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/unittest
+)
