@@ -68,4 +68,5 @@ class ThreadPoolLocalWorkQueue {
 
 };
 }  // namespace thread_pool
+thread_local std::unique_ptr<std::queue<thread_pool::FunctionWrapper>> thread_pool::ThreadPoolLocalWorkQueue::local_work_queue_;
 #endif  // SRC_TPOOL_LOCALQUEUE_H_
