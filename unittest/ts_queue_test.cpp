@@ -1,6 +1,8 @@
-#include <future>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+
+#include <future>
+
 #include "src/threadsafe_queue.h"
 
 TEST (ThreadSafeQueueTest, TryPopEmpty) {
