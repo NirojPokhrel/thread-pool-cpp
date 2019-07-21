@@ -23,17 +23,17 @@ class WorkStealTpool {
     }
   }
 
-  ~WorkStealingQueue() {
+  ~WorkStealTpool() {
     done_ = true;
   }
 
   template<typename FunctionType>
-  std::future<typename std::result_of<FunctionType()>::type> submit (FunctionType f) {
+  std::future<typename std::result_of<FunctionType()>::type> SubmitWork (FunctionType f) {
     typedef typename std::result_of<FunctionType()>::type result_type;
     std::packaged_task<result_type()> task(f);
     std::future<result_type> res(task.get_future());
     if (local_work_queue_) {
-      local_work_queue_->push(std::move(task));
+      local_work_queue_->Push(std::move(task));
     } else {
       pool_work_queue_.push(std::move(task));
     }
@@ -63,7 +63,7 @@ class WorkStealTpool {
   }
 
   bool PopTaskFromPoolQueue(FunctionWrapper& task) {
-    return pool_work_queue_.try_pop();
+    return pool_work_queue_.try_pop(task);
   }
 
   bool PopTaskFromOtherThreadQueue(FunctionWrapper& task) {
@@ -78,11 +78,13 @@ class WorkStealTpool {
 
   std::atomic<bool> done_;
   threadsafe_queue<FunctionWrapper> pool_work_queue_;
+  static thread_local WorkStealingQueue* local_work_queue_;
   std::vector<std::unique_ptr<WorkStealingQueue>> queues_;
   std::vector<std::thread> threads_;
   JoinThreads joiner_;
-  static thread_local WorkStealingQueue* local_work_queue_;
   static thread_local unsigned local_index_;
 };
+thread_local WorkStealingQueue* WorkStealTpool::local_work_queue_;
+thread_local unsigned WorkStealTpool::local_index_;
 }
 #endif  // SRC_TPOOL_WORKSTEAL_H_
