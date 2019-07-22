@@ -55,3 +55,9 @@ add_test(
   COMMAND ${CMAKE_BINARY_DIR}/unittest/work_stealing_queue
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/unittest
 )
+
+add_test(
+  NAME tpool_work_stealing
+  COMMAND ${CMAKE_BINARY_DIR}/unittest/tpool_work_stealing
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/unittest
+)
