@@ -1,5 +1,6 @@
 #ifndef SRC_TPOOL_WORKSTEAL_H_
 #define SRC_TPOOL_WORKSTEAL_H_
+#include <numeric>
 #include <thread>
 #include "function_wrapper.h"
 #include "join_threads.h"
