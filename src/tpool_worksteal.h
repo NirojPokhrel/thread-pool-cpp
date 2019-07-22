@@ -15,7 +15,9 @@ class WorkStealTpool {
     try {
       for (unsigned i=0; i<thread_count; ++i) {
         queues_.push_back(std::unique_ptr<WorkStealingQueue>(new WorkStealingQueue()));
-        threads_.push_back(std::thread(&WorkStealTpool::WorkerThread, this, i));
+      }
+      for (unsigned i=0; i<thread_count; ++i) {
+         threads_.push_back(std::thread(&WorkStealTpool::WorkerThread, this, i));
       }
     } catch (...) {
       done_ = true;
@@ -45,7 +47,7 @@ class WorkStealTpool {
     if (PopTaskFromLocalQueue(task) || PopTaskFromPoolQueue(task) || PopTaskFromOtherThreadQueue(task)) {
       task();
     } else {
-      std::this_thread::yield;
+      std::this_thread::yield();
     }
   }
 
@@ -78,10 +80,10 @@ class WorkStealTpool {
 
   std::atomic<bool> done_;
   threadsafe_queue<FunctionWrapper> pool_work_queue_;
-  static thread_local WorkStealingQueue* local_work_queue_;
   std::vector<std::unique_ptr<WorkStealingQueue>> queues_;
   std::vector<std::thread> threads_;
   JoinThreads joiner_;
+  static thread_local WorkStealingQueue* local_work_queue_;
   static thread_local unsigned local_index_;
 };
 thread_local WorkStealingQueue* WorkStealTpool::local_work_queue_;
