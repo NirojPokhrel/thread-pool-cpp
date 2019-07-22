@@ -91,12 +91,9 @@ std::list<T> ParallelQuickSort(std::list<T> input) {
 }
 
 
-TEST (SimpleThreadPool, ParallelSort) {
+TEST (WorkStealTpool, ParallelSort) {
   std::list<int> input{10, 50, 2, 7, 4, 3, 90, 1, 100, 10};
   auto result = ParallelQuickSort(input);
-  for (auto res : result) {
-    std::cout << res << std::endl;
-  }
   EXPECT_TRUE (std::is_sorted(result.begin(), result.end()));
 }
 
