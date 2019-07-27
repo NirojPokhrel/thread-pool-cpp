@@ -6,9 +6,9 @@
 #include <thread>
 #include <vector>
 
-#include "src/function_wrapper.h"
-#include "src/join_threads.h"
-#include "src/threadsafe_queue.h"
+#include "include/function_wrapper.h"
+#include "include/join_threads.h"
+#include "include/threadsafe_queue.h"
 
 namespace thread_pool {
 class TpoolWaitableTask {

@@ -3,7 +3,7 @@
 
 #include <future>
 
-#include "src/work_stealing_queue.h"
+#include "include/work_stealing_queue.h"
 
 TEST (WorkStealingQueue, PushAndPop) {
   thread_pool::WorkStealingQueue queue;

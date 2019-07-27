@@ -2,7 +2,7 @@
 #include <gmock/gmock.h>
 #include <iterator>
 #include <numeric>
-#include "src/tpool_waitabletask.h"
+#include "include/tpool_waitabletask.h"
 
 template <typename Iterator, typename T>
 struct AccumulateBlock {

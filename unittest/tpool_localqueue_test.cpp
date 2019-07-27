@@ -5,7 +5,7 @@
 #include <iterator>
 #include <list>
 
-#include "src/tpool_localqueue.h"
+#include "include/tpool_localqueue.h"
 
 template<typename T>
 struct Sorter {

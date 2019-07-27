@@ -5,7 +5,7 @@
 #include <future>
 #include <numeric>
 #include <vector>
-#include "src/simple_tpool.h"
+#include "include/simple_tpool.h"
 
 TEST (SimpleThreadPool, SubmitDifferentTask) {
   int a = 5, b = 10, c = 15, d = 20;

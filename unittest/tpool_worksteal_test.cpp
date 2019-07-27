@@ -6,7 +6,7 @@
 #include <iterator>
 #include <list>
 
-#include "src/tpool_worksteal.h"
+#include "include/tpool_worksteal.h"
 
 
 TEST (WorkStealTpool, SubmitDifferentTask) {

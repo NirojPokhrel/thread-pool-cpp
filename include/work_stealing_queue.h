@@ -2,7 +2,7 @@
 #define SRC_WORK_STEALING_QUEUE_H_
 #include <deque>
 #include <mutex>
-#include "src/function_wrapper.h"
+#include "include/function_wrapper.h"
 namespace thread_pool {
 class WorkStealingQueue {
  public:

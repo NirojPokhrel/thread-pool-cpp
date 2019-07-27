@@ -3,7 +3,7 @@
 
 #include <future>
 
-#include "src/threadsafe_queue.h"
+#include "include/threadsafe_queue.h"
 
 TEST (ThreadSafeQueueTest, TryPopEmpty) {
   thread_pool::threadsafe_queue<int> ts_queue;
