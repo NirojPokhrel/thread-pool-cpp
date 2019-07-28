@@ -13,8 +13,16 @@
 namespace thread_pool {
 class TpoolWaitableTask {
  public:
-  TpoolWaitableTask() : done_(false), joiner_(threads_) {
-    unsigned const thread_count = std::thread::hardware_concurrency();
+  // construct a thread pool
+  // @thread_count - provide a number of threads to instantiate in thread pool otherwise it will default to
+  //                 number of hardware threads
+  TpoolWaitableTask(int thread_count = 0) : done_(false), joiner_(threads_) {
+    if (!thread_count) {
+      thread_count = std::thread::hardware_concurrency();
+      if (!thread_count) {
+        thread_count = 2;
+      }
+    }
     try {
       for (unsigned i = 0; i < thread_count; ++i) {
         threads_.push_back(std::thread(&TpoolWaitableTask::WorkerThread, this));
@@ -25,16 +33,20 @@ class TpoolWaitableTask {
     }
   }
 
+  // destroy the thread pool
   ~TpoolWaitableTask() {
     done_ = true;
   }
 
+  // submit work to be done to the thread pool
+  // @f work to be done
+  // returns future which stores return value
   template<typename FunctionType>
   std::future<typename std::result_of<FunctionType()>::type> Submit(FunctionType f) {
     typedef typename std::result_of<FunctionType()>::type result_type;
     std::packaged_task<result_type()> task(std::move(f));
     std::future<result_type> res(task.get_future());
-    work_queue_.push(std::move(task));
+    work_queue_.Push(std::move(task));
     return res;
   }
 
@@ -42,7 +54,7 @@ class TpoolWaitableTask {
   void WorkerThread() {
     while (!done_) {
       FunctionWrapper task;
-      if (work_queue_.try_pop(task)) {
+      if (work_queue_.TryPop(task)) {
         task();
       } else {
         std::this_thread::yield;
@@ -50,7 +62,7 @@ class TpoolWaitableTask {
     }
   }
   std::atomic_bool done_;   // boolean to stop the running thread
-  threadsafe_queue<FunctionWrapper> work_queue_;  // next work item on the queue
+  ThreadsafeQueue<FunctionWrapper> work_queue_;  // next work item on the queue
   std::vector<std::thread> threads_;    // store all the threads in the pool
   JoinThreads joiner_;    // clean up and join all the threads in the pool
 };

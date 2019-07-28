@@ -7,29 +7,29 @@
 
 namespace thread_pool {
 template<typename T>
-class threadsafe_queue {
+class ThreadsafeQueue {
  public:
-  threadsafe_queue() {}
-  threadsafe_queue(const threadsafe_queue& queue) {
+  ThreadsafeQueue() {}
+  ThreadsafeQueue(const ThreadsafeQueue& queue) {
     std::lock_guard<std::mutex> guard(mtx_);
     this->std_queue_ = queue.std_queue_;
   }
-  threadsafe_queue& operator=(const threadsafe_queue&) = delete;    // delete the assignment operation
+  ThreadsafeQueue& operator=(const ThreadsafeQueue&) = delete;    // delete the assignment operation
 
-  void push(T new_value) {
+  void Push(T new_value) {
     std::lock_guard<std::mutex> guard(mtx_);
     std_queue_.push(std::move(new_value));
     cond_var_.notify_one();
   }
 
-  void wait_and_pop(T& value) {
+  void WaitAndPop(T& value) {
     std::unique_lock<std::mutex>  u_lk(mtx_);
     cond_var_.wait(u_lk, [this](){return !std_queue_.empty();});
     value = std_queue_.front();
     std_queue_.pop();
   }
 
-  std::shared_ptr<T> wait_and_pop() {
+  std::shared_ptr<T> WaitAndPop() {
     std::unique_lock<std::mutex> u_lk(mtx_);
     cond_var_.wait(u_lk, [this](){return !std_queue_.empty();});
     std::shared_ptr<T> res(std::make_shared<T>(std_queue_.front()));
@@ -37,7 +37,7 @@ class threadsafe_queue {
     return res;
   }
 
-  bool try_pop(T& value) {
+  bool TryPop(T& value) {
     std::lock_guard<std::mutex> guard(mtx_);
     if (std_queue_.empty()) {
       return false;
@@ -47,7 +47,7 @@ class threadsafe_queue {
     return true;
   }
 
-  std::shared_ptr<T> try_pop() {
+  std::shared_ptr<T> TryPop() {
     std::lock_guard<std::mutex> guard(mtx_);
     if (std_queue_.empty()) {
       return std::shared_ptr<T>();

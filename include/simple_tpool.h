@@ -10,9 +10,15 @@
 namespace thread_pool {
 class SimpleThreadPool {
  public:
-  SimpleThreadPool(int thread_count = 0) : done_(false), joiner_(threads_) {
+  // construct a simple thread pool
+  // @thread_count - provide a number of threads to instantiate in thread pool otherwise it will default to
+  //                 number of hardware threads
+  explicit SimpleThreadPool(int thread_count = 0) : done_(false), joiner_(threads_) {
     if (!thread_count) {
       thread_count = std::thread::hardware_concurrency();
+      if (!thread_count) {
+        thread_count = 2;
+      }
     }
     try {
       for (unsigned i = 0; i < thread_count; ++i) {
@@ -28,16 +34,18 @@ class SimpleThreadPool {
     done_ = true;
   }
 
+  // submit the work to be done by threadpool
+  // @f work to be done
   template<typename FunctionType>
   void SubmitWork(FunctionType f) {   // submit work to be done
-    work_queue_.push(std::function<void()>(f));
+    work_queue_.Push(std::function<void()>(f));
   }
 
  private:
   void WorkerThread() {
     while (!done_) {
       std::function<void()> task;
-      if (work_queue_.try_pop(task)) {
+      if (work_queue_.TryPop(task)) {
         task();
       } else {
         std::this_thread::yield();
@@ -46,7 +54,7 @@ class SimpleThreadPool {
   }
 
   std::atomic_bool done_;   // boolean to stop the running thread
-  threadsafe_queue<std::function<void()>> work_queue_;    // next work item on the queue
+  ThreadsafeQueue<std::function<void()>> work_queue_;    // next work item on the queue
   std::vector<std::thread> threads_;    // store all the threads in the pool
   JoinThreads joiner_;    // clean up and join all the threads in the pool
 };
