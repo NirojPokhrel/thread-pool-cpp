@@ -16,7 +16,7 @@ TEST (SimpleThreadPool, SubmitDifferentTask) {
     }
   };
   int e = 0, f = 0;
-  thread_pool::ThreadPool tpool;
+  thread_pool::SimpleThreadPool tpool;
   tpool.SubmitWork(std::bind(Addition, a, b, std::ref(e)));   // std::ref is required to let bind operation know it is references
   tpool.SubmitWork(std::bind(Addition, c, d, std::ref(f)));   // otherwise, bind operations copies the variable and this copy's reference is passed to the lambda
   std::this_thread::sleep_for(std::chrono::milliseconds(100));  // let child threads complete
@@ -37,7 +37,7 @@ TEST (SimpleThreadPool, ParallelAccumulateTenElem) {
     }
   };
   std::vector<int> result(10, 0.0);
-  thread_pool::ThreadPool tpool;
+  thread_pool::SimpleThreadPool tpool;
   for (int i=0; i<num_of_elem; i+= 10) {
     tpool.SubmitWork(std::bind(Addition, std::ref(input_vec), i, i+10, std::ref(result[i/10])));
   }

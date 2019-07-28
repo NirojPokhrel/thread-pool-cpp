@@ -8,13 +8,15 @@
 #include "join_threads.h"
 #include "threadsafe_queue.h"
 namespace thread_pool {
-class ThreadPool {
+class SimpleThreadPool {
  public:
-  ThreadPool() : done_(false), joiner_(threads_) {
-    unsigned const thread_count = std::thread::hardware_concurrency();
+  SimpleThreadPool(int thread_count = 0) : done_(false), joiner_(threads_) {
+    if (!thread_count) {
+      thread_count = std::thread::hardware_concurrency();
+    }
     try {
       for (unsigned i = 0; i < thread_count; ++i) {
-        threads_.push_back(std::thread(&ThreadPool::WorkerThread, this));
+        threads_.push_back(std::thread(&SimpleThreadPool::WorkerThread, this));
       }
     } catch (...) {
       done_ = true;
@@ -22,7 +24,7 @@ class ThreadPool {
     }
   }
 
-  ~ThreadPool() {
+  ~SimpleThreadPool() {
     done_ = true;
   }
 
